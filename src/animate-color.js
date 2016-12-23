@@ -1,28 +1,45 @@
 ( function() {
+  let canvas = document.getElementById('canvas'),
+      context = canvas.getContext('2d'),
+      textState = "fadeout",
+      alpha = 1.0;
+
   window.onload = function() {
-    let canvas = document.getElementById('canvas');
-    let context = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    callEventListeners();
+    resizeCanvas();
 
-    pulseText(context);
-
-    setInterval( () => {
-      document.getElementById("canvas").style.backgroundColor = randomRgb();
-    }, 2500);
+    pulseText();
+    animateBackground();
   };
 
+  function callEventListeners() {
+    window.addEventListener('resize', resizeCanvas, false);
+    window.addEventListener('orientationchange', resizeCanvas, false);
+  }
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  function animateBackground() {
+    setTimeout( () => {
+      requestAnimationFrame(animateBackground);
+      document.getElementById("canvas").style.backgroundColor = getRandomRgb();
+    }, 2500);
+  }
+
   // random rgb values
-  function randomRgb () {
-    let r = randomInt(0,255),
-        g = randomInt(0,255),
-        b = randomInt(0,255);
+  function getRandomRgb () {
+    let r = getRandomInt(0,255),
+        g = getRandomInt(0,255),
+        b = getRandomInt(0,255);
 
     return `rgb( ${r}, ${g}, ${b} )`;
   }
 
   // random integer in range
-  function randomInt(min,max) {
+  function getRandomInt(min,max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
@@ -36,31 +53,30 @@
     return `${size}px ${typeface}`;
   }
 
-  // pulse text
-  function pulseText(context) {
+  // pulse text - fade in/fade out
+  function pulseText(text) {
     let x = canvas.width / 6,
-        y = canvas.height * 0.55,
-        state = "fadeout",
-        alpha = 1.0;
+        y = canvas.height * 0.55;
 
-    setInterval( () => {
+    setTimeout( () => {
+      requestAnimationFrame(pulseText);
       context.clearRect(0, 0, canvas.width, canvas.height);
       context.font = getCanvasFont("Helvetica");
       context.fillStyle = "rgba(255, 255, 255, " + alpha + ")";
       context.fillText("breathe", x, y);
 
-      if (state === "fadeout") {
+      if (textState === "fadeout") {
         alpha = alpha - 0.05;
         if (alpha < 0) {
-          state = "fadein";
+          textState = "fadein";
         }
-      } else if (state === "fadein") {
+      } else if (textState === "fadein") {
         alpha = alpha + 0.05;
         if (alpha > 1.0) {
-          state = "fadeout";
+          textState = "fadeout";
         }
       }
-    }, 105);
+    }, 65 );
   }
 
 })();
