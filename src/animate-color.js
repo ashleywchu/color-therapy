@@ -2,8 +2,8 @@
   window.onload = function() {
     let canvas = document.getElementById('canvas');
     let context = canvas.getContext('2d');
-    canvas.width = canvas.clientWidth;
-    canvas.height = canvas.clientHeight;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
     pulseText(context);
 
@@ -39,7 +39,7 @@
   // pulse text
   function pulseText(context) {
     let x = canvas.width / 6,
-        y = canvas.height * 0.6,
+        y = canvas.height * 0.55,
         state = "fadeout",
         alpha = 1.0;
 
